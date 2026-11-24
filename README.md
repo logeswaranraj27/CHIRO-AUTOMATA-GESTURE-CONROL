@@ -126,6 +126,12 @@ python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
 ```
 Open your browser to: **`http://localhost:8000`** (or run `npm run dev` in `frontend/` for hot-reloading dev mode at `http://localhost:5173`).
 
+### Cloud Demo on Render
+
+[Deploy this repository to Render](https://render.com/deploy?repo=https://github.com/logeswaranraj27/CHIRO-AUTOMATA-GESTURE-CONROL) and select the free web service. Render reads `render.yaml`, builds the Docker image, and deploys the `main` branch.
+
+The cloud demo hosts the dashboard and API, but the backend cannot access your browser's webcam or control your personal Windows workstation. Those features require running the backend locally on Windows. Render's free service also sleeps when idle and uses temporary storage, so screenshots and activity logs are not persistent.
+
 ---
 
 ## 6. Manual Testing Guide for Live Webcam Interaction

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: chiro-automata-demo
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    autoDeploy: true
