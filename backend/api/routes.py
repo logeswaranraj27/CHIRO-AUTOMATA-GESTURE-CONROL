@@ -100,13 +100,22 @@ def stop_camera():
 
 def _generate_mjpeg_stream():
     """Generates continuous MJPEG multipart stream"""
+    last_frame_count = -1
+    was_running = False
     while True:
         if camera_service:
-            jpeg = camera_service.get_latest_jpeg()
+            frame_count, is_running, jpeg = camera_service.get_latest_stream_frame()
+            if frame_count != last_frame_count or is_running != was_running:
+                if not jpeg:
+                    jpeg = camera_service.get_latest_jpeg()
+                last_frame_count = frame_count
+                was_running = is_running
+            else:
+                jpeg = None
             if jpeg:
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
-        time.sleep(0.033) # ~30 FPS
+        time.sleep(0.01)
 
 @router.get("/camera/stream")
 def camera_stream():

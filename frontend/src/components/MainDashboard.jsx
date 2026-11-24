@@ -184,7 +184,7 @@ export default function MainDashboard({
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               <span>MediaPipe Hands Vision</span>
             </span>
-            <span className="font-mono text-slate-400 text-[10px]">640×480 @ 30 FPS</span>
+            <span className="font-mono text-slate-400 text-[10px]">480×360 • up to 10 FPS</span>
           </div>
         </div>
 

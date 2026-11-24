@@ -130,7 +130,7 @@ Open your browser to: **`http://localhost:8000`** (or run `npm run dev` in `fron
 
 [Deploy this repository to Render](https://render.com/deploy?repo=https://github.com/logeswaranraj27/CHIRO-AUTOMATA-GESTURE-CONROL) and select the free web service. Render reads `render.yaml`, builds the Docker image, and deploys the `main` branch.
 
-The cloud demo can use your browser's webcam for gesture recognition after you grant camera permission. The backend still cannot control your personal Windows workstation; system-level actions require running it locally on Windows. Render's free service also sleeps when idle and uses temporary storage, so screenshots and activity logs are not persistent.
+The cloud demo can use your browser's webcam for gesture recognition after you grant camera permission. To reduce bandwidth and processing load, browser frames are resized to 480×360 and uploaded at up to 10 FPS. The backend still cannot control your personal Windows workstation; system-level actions require running it locally on Windows. Render's free service also sleeps when idle and uses temporary storage, so screenshots and activity logs are not persistent.
 
 ---
 

@@ -115,7 +115,7 @@ export default function CameraPanel({ cameraStatus, onRefreshStatus }) {
           <span>Hand Skeleton: 21 Landmarks Overlay</span>
         </span>
         <span className="font-mono text-[11px] text-slate-500">
-          Format: 640×480 @ 30fps
+          Format: 480×360 • up to 10fps
         </span>
       </div>
     </div>

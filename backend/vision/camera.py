@@ -144,8 +144,20 @@ class CameraService:
         with self.frame_lock:
             if not self.is_running or self.capture_source != "browser":
                 return False
+            height, width = frame.shape[:2]
+            scale = min(1.0, 480 / width, 360 / height)
+            if scale < 1.0:
+                frame = cv2.resize(
+                    frame,
+                    (int(width * scale), int(height * scale)),
+                    interpolation=cv2.INTER_AREA,
+                )
             self._process_frame(frame)
         return True
+
+    def get_latest_stream_frame(self) -> Tuple[int, bool, Optional[bytes]]:
+        with self.lock:
+            return self.frame_count, self.is_running, self.latest_jpeg
 
     def _process_frame(self, frame: np.ndarray) -> None:
         # Mirror frame horizontally for natural selfie interaction

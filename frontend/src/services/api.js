@@ -15,6 +15,8 @@ let cameraVideo = null;
 let cameraCanvas = null;
 let cameraFrameTimer = null;
 let frameUploadInProgress = false;
+const CAMERA_FRAME_WIDTH = 480;
+const CAMERA_FRAME_HEIGHT = 360;
 
 function releaseBrowserCamera() {
   if (cameraFrameTimer !== null) {
@@ -34,12 +36,12 @@ function releaseBrowserCamera() {
 
 async function uploadCameraFrame() {
   if (!cameraVideo || !cameraCanvas || cameraVideo.readyState < 2) return;
-  cameraCanvas.width = 640;
-  cameraCanvas.height = 480;
-  const context = cameraCanvas.getContext('2d');
+  cameraCanvas.width = CAMERA_FRAME_WIDTH;
+  cameraCanvas.height = CAMERA_FRAME_HEIGHT;
+  const context = cameraCanvas.getContext('2d', { alpha: false });
   context.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
 
-  const frame = await new Promise((resolve) => cameraCanvas.toBlob(resolve, 'image/jpeg', 0.7));
+  const frame = await new Promise((resolve) => cameraCanvas.toBlob(resolve, 'image/jpeg', 0.55));
   if (!frame) throw new Error('Could not capture a frame from the webcam.');
 
   const response = await fetch(`${API_BASE}/camera/frame`, {
