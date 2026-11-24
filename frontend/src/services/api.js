@@ -1,9 +1,6 @@
 export function getApiBaseUrl() {
   if (typeof window === "undefined") return "http://localhost:8000/api";
-  const protocol = window.location.protocol;
-  const host = window.location.hostname || "localhost";
-  const port = window.location.port === "5173" || window.location.port === "3000" ? "8000" : (window.location.port || "8000");
-  return `${protocol}//${host}:${port}/api`;
+  return `${window.location.origin}/api`;
 }
 
 export function getCameraStreamUrl() {
