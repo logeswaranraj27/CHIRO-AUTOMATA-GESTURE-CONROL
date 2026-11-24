@@ -30,6 +30,7 @@ export default function LiveGestureView({
 }) {
   const [loading, setLoading] = useState(false);
   const [streamError, setStreamError] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
   const isRunning = cameraStatus?.is_running || false;
   const fps = cameraStatus?.fps || 0;
 
@@ -42,6 +43,7 @@ export default function LiveGestureView({
 
   const handleToggle = async () => {
     setLoading(true);
+    setCameraError(null);
     try {
       if (isRunning) {
         await stopCamera();
@@ -51,6 +53,7 @@ export default function LiveGestureView({
       }
       if (onRefreshCamera) await onRefreshCamera();
     } catch (e) {
+      setCameraError(e.message);
       console.error('Camera toggle error:', e);
     } finally {
       setLoading(false);
@@ -118,10 +121,10 @@ export default function LiveGestureView({
                   <Camera className="w-7 h-7 text-cyan-400/50" />
                 </div>
                 <h4 className="text-sm font-bold text-slate-200 mb-1">
-                  Camera Offline
+                  {cameraError ? 'Camera Error' : 'Camera Offline'}
                 </h4>
                 <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-                  Start the webcam to extract 21 three-dimensional landmark points in real time.
+                  {cameraError || cameraStatus?.error || 'Start the webcam to extract 21 three-dimensional landmark points in real time.'}
                 </p>
                 <button
                   onClick={handleToggle}

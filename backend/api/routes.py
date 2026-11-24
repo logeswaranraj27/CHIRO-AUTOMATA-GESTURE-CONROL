@@ -1,7 +1,9 @@
 import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, HTTPException, Response, Request
+import cv2
+import numpy as np
+from fastapi import APIRouter, Body, HTTPException, Response, Request
 from fastapi.responses import StreamingResponse, FileResponse
 from pydantic import BaseModel
 
@@ -52,10 +54,10 @@ async def events_stream(request: Request):
 
 # --- Camera Endpoints ---
 @router.post("/camera/start")
-def start_camera():
+def start_camera(source: str = "local"):
     if not camera_service:
         raise HTTPException(status_code=500, detail="Camera service not initialized")
-    success = camera_service.start()
+    success = camera_service.start(source=source)
     activity_logger.log(
         event_type="CAMERA",
         message="Webcam capture started." if success else f"Failed to start camera: {camera_service.error_message}"
@@ -67,6 +69,22 @@ def start_camera():
     if not success:
         return {"success": False, "error": camera_service.error_message}
     return {"success": True, "message": "Camera started"}
+
+@router.post("/camera/frame")
+def process_camera_frame(frame_data: bytes = Body(..., media_type="image/jpeg")):
+    if not camera_service:
+        raise HTTPException(status_code=500, detail="Camera service not initialized")
+    if camera_service.capture_source != "browser" or not camera_service.is_running:
+        raise HTTPException(status_code=409, detail="Browser camera is not active")
+    if not frame_data or len(frame_data) > 2_000_000:
+        raise HTTPException(status_code=413, detail="Camera frame must be between 1 byte and 2 MB")
+
+    frame = cv2.imdecode(np.frombuffer(frame_data, dtype=np.uint8), cv2.IMREAD_COLOR)
+    if frame is None:
+        raise HTTPException(status_code=400, detail="Invalid JPEG camera frame")
+    if not camera_service.process_browser_frame(frame):
+        raise HTTPException(status_code=409, detail="Browser camera is no longer active")
+    return {"success": True}
 
 @router.post("/camera/stop")
 def stop_camera():

@@ -43,6 +43,7 @@ export default function MainDashboard({
 }) {
   const [cameraLoading, setCameraLoading] = useState(false);
   const [streamError, setStreamError] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
   const isRunning = cameraStatus?.is_running || false;
   const fps = cameraStatus?.fps || 0;
 
@@ -62,6 +63,7 @@ export default function MainDashboard({
   // Toggle Camera
   const handleToggleCamera = async () => {
     setCameraLoading(true);
+    setCameraError(null);
     try {
       if (isRunning) {
         await stopCamera();
@@ -71,6 +73,7 @@ export default function MainDashboard({
       }
       if (onRefreshCamera) await onRefreshCamera();
     } catch (e) {
+      setCameraError(e.message);
       console.error('Failed to toggle camera:', e);
     } finally {
       setCameraLoading(false);
@@ -150,7 +153,7 @@ export default function MainDashboard({
                   {isRunning ? 'Stream Disconnected' : 'Webcam Standby'}
                 </h4>
                 <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">
-                  {cameraStatus?.error || 'Activate webcam to track 21 hand landmarks and evaluate geometric gestures.'}
+                  {cameraError || cameraStatus?.error || 'Activate webcam to track 21 hand landmarks and evaluate geometric gestures.'}
                 </p>
                 {!isRunning && (
                   <button
